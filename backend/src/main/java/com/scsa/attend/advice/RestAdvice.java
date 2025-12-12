@@ -1,10 +1,10 @@
 package com.scsa.attend.advice;
 
+import com.scsa.attend.dto.ErrorResponse;
 import com.scsa.attend.exception.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -18,39 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class RestAdvice {
 
-    /**
-     * API 에러 응답 공통 DTO.
-     */
-    public static class ErrorResponse {
-        private final int status;
-        private final String code;
-        private final String message;
 
-        public ErrorResponse(int status, String code, String message) {
-            this.status = status;
-            this.code = code;
-            this.message = message;
-        }
-
-        /**
-         * @return HTTP 상태
-         */
-        public int getStatus() {
-            return status;
-        }
-
-        /**
-         * @ return 에러 요약 코드
-         */
-        public String getCode() {return code; }
-
-        /**
-         * @return 에러 메시지
-         */
-        public String getMessage() {
-            return message;
-        }
-    }
 
     @ExceptionHandler(PermissionDeniedException.class)
     public ResponseEntity<ErrorResponse> PermissionDeniedExceptionHandler(Exception e)
