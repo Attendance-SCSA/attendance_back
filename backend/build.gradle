@@ -1,0 +1,81 @@
+plugins {
+    id 'java'
+    //    Spring Boot용 BOM(Bill of Materials) 플러그인의 도움으로 3.5.7버전에 최적화된 라이브러리를 찾아 다운로드가 됨
+    id 'org.springframework.boot' version '3.5.7'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.scsa'
+version = '0.0.1-SNAPSHOT'
+description = 'SCSAattend'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext{
+    ojdbcVersion = '23.5.0.24.07'
+}
+
+dependencies {
+
+    // DTO Validation (@Pattern 등)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    //spring-boot-starter-data-jdbc 때문에 데이터소스를 자동 설정하는데 필요
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+    // https://mvnrepository.com/artifact/com.oracle.database.jdbc/ojdbc11
+    implementation "com.oracle.database.jdbc:ojdbc11:$ojdbcVersion"
+
+    // JSP 지원
+    implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+    // https://mvnrepository.com/artifact/org.glassfish.web/jakarta.servlet.jsp.jstl
+    implementation "org.glassfish.web:jakarta.servlet.jsp.jstl"
+    // https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api
+    implementation "jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api"
+
+    // Mybatis
+    // https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+    implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
+
+    //MySQL의 SQL결과를 추적하여 로그출력
+    // https://mvnrepository.com/artifact/org.bgee.log4jdbc-log4j2/log4jdbc-log4j2-jdbc4.1
+    implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+
+    // spring web, lombok
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // SpringSecurity
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // JWT Token
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

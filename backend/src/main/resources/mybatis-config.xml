@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- db의 스네이크케이스 컬럼명과 vo의 카멜케이스 멤버변수를 매핑시켜줌 -->
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL"/> <!-- null값 삽입 시 null로 들어가게끔-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!-- 별칭 지정-->
+    <typeAliases>
+        <typeAlias type="com.scsa.attend.vo.User" alias="User"/>
+        <typeAlias type="com.scsa.attend.vo.AttendanceInfo" alias="AttendanceInfo"/>
+        <typeAlias type="com.scsa.attend.vo.AttendanceType" alias="AttendanceType"/>
+
+    <!--        패키지로 지정-->
+    <!--        <package name="com.my.study.starbucks.vo"/>-->
+    <!--        개별 지정-->
+    <!--        <typeAlias type="com.my.study.starbucks.vo.Customer" alias="Customer"/>-->
+
+    </typeAliases>
+
+    <!--    mybatis의 connection pool을 사용하지 않고, spring에 내장된 hikari cp를 사용하겠다 (DatabaseConfig.java에서 설정함)-->
+    <!--    <environments default="development">-->
+    <!--        <environment id="development">-->
+    <!--            <transactionManager type="JDBC"/>-->
+    <!--            <dataSource type="POOLED">-->
+    <!--                <property name="driver" value="${driver}"/>-->
+    <!--                <property name="url" value="${url}"/>-->
+    <!--                <property name="username" value="${username}"/>-->
+    <!--                <property name="password" value="${password}"/>-->
+    <!--            </dataSource>-->
+    <!--        </environment>-->
+    <!--    </environments>-->
+
+    <!--        인터페이스의 패키지 경로 == xml mapper의 resourses내 경로 == xml mapper의 namespace가 일치하면 mapper를 congif에서 mapper를 지정하지 않아도 된다.-->
+<!--        <mappers></mappers>-->
+    </configuration>
