@@ -1,13 +1,17 @@
 package com.scsa.attend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.scsa.attend.vo.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -23,6 +27,12 @@ public class AddMemberRequest {
     @Pattern(regexp = "DS|DX|SDS")
     @NotBlank
     private String company;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @NotNull
+    private Date startDay;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    @NotNull
+    private Date endDay;
 
     public User toUser() {
         User user = new User();
@@ -30,6 +40,8 @@ public class AddMemberRequest {
         user.setLoginPwd(loginPwd);
         user.setName(name);
         user.setCompany(company);
+        user.setStartDay(startDay);
+        user.setEndDay(endDay);
         return user;
     }
 }

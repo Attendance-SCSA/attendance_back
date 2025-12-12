@@ -4,9 +4,12 @@ import com.scsa.attend.dto.AddMemberRequest;
 import com.scsa.attend.dto.EditMemberRequest;
 import com.scsa.attend.dto.MemberResponse;
 import com.scsa.attend.dto.SuccessResponse;
+import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.exception.NotFoundException;
 import com.scsa.attend.exception.PermissionDeniedException;
+import com.scsa.attend.mapper.AttendanceInfoMapper;
 import com.scsa.attend.mapper.UserMapper;
+import com.scsa.attend.vo.AttendanceInfoBatch;
 import com.scsa.attend.vo.User;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,6 +27,7 @@ import java.util.List;
 public class UserService {
 
     private final UserMapper userMapper;
+    private final AttendanceInfoMapper aInfoMapper;
 
     @Transactional(readOnly = true)
     public List<MemberResponse> findAllMembers(Integer userId)
@@ -38,12 +43,20 @@ public class UserService {
 
     @Transactional
     public MemberResponse createMember(Integer userId, @Valid AddMemberRequest request)
-            throws PermissionDeniedException, NotFoundException {
+            throws PermissionDeniedException, NotFoundException, InvalidInputException {
         requireAdmin(userId);
         checkLoginIdDuplicate(request.getLoginId());
+        checkPeriodValidation(request.getStartDay(), request.getEndDay());
         User user = request.toUser();
         user.setRole("member");
         userMapper.insertMember(user);
+
+        // 2. AttendanceInfoBatch 객체 생성 (java.util.Date 사용)
+        AttendanceInfoBatch batchParams = AttendanceInfoBatch.fromUser(user);
+
+        // 3. 출결 행 일괄 삽입
+        aInfoMapper.insertAttendanceInfoBatch(batchParams);
+
         MemberResponse response = MemberResponse.fromUser(user);
         return response;
 
@@ -112,6 +125,13 @@ public class UserService {
         if (user != null) {
             throw new NotFoundException("이미 존재하는 로그인 ID입니다.");
         }
+    }
+
+    private void checkPeriodValidation(Date startDay, Date endDate) throws InvalidInputException {
+        if (startDay.after(endDate)) {
+            throw new InvalidInputException("날짜 입력이 유효하지 않습니다.");
+        }
+
     }
 
 }

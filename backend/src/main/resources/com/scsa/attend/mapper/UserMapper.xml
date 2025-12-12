@@ -11,7 +11,9 @@
             LOGIN_PWD,
             NAME,
             COMPANY,
-            ROLE
+            ROLE,
+            START_DAY,
+            END_DAY
         FROM
             USERS
         WHERE
@@ -31,14 +33,18 @@
             LOGIN_PWD,
             NAME,
             COMPANY,
-            ROLE
+            ROLE,
+            START_DAY,
+            END_DAY
             )
         VALUES (
             #{loginId},
             #{loginPwd},
             #{name},
             #{company},
-            #{role}
+            #{role},
+            #{startDay},
+            #{endDay}
         )
     </insert>
 
@@ -49,7 +55,9 @@
             LOGIN_PWD,
             NAME,
             COMPANY,
-            ROLE
+            ROLE,
+            START_DAY,
+            END_DAY
         FROM
             USERS
         WHERE
@@ -84,7 +92,9 @@
             LOGIN_PWD,
             NAME,
             COMPANY,
-            ROLE
+            ROLE,
+            START_DAY,
+            END_DAY
         FROM
             USERS
         WHERE
@@ -98,7 +108,9 @@
             LOGIN_PWD,
             NAME,
             COMPANY,
-            ROLE
+            ROLE,
+            START_DAY,
+            END_DAY
         FROM
             USERS
         WHERE

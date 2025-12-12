@@ -1,10 +1,13 @@
 package com.scsa.attend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.scsa.attend.vo.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
 
 
 @Data
@@ -18,6 +21,10 @@ public class MemberResponse {
     private String name;
     private String company;
     private String role;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private Date startDay;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+    private Date endDay;
 
     public static MemberResponse fromUser(User user) {
         MemberResponse response = new MemberResponse();
@@ -26,6 +33,8 @@ public class MemberResponse {
         response.setName(user.getName());
         response.setCompany(user.getCompany());
         response.setRole(user.getRole());
+        response.setStartDay(user.getStartDay());
+        response.setEndDay(user.getEndDay());
 
         return response; // 완성된 응답 객체 반환
 

@@ -4,6 +4,7 @@ import com.scsa.attend.dto.AddMemberRequest;
 import com.scsa.attend.dto.EditMemberRequest;
 import com.scsa.attend.dto.MemberResponse;
 import com.scsa.attend.dto.SuccessResponse;
+import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.exception.NotFoundException;
 import com.scsa.attend.exception.PermissionDeniedException;
 import com.scsa.attend.service.UserService;
@@ -37,7 +38,7 @@ public class UserController {
 
     @PostMapping
     public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request)
-            throws NotFoundException, PermissionDeniedException {
+            throws NotFoundException, PermissionDeniedException, InvalidInputException {
         Integer userId = adminTmpId;
         MemberResponse response = userService.createMember(userId, request);
         return response;

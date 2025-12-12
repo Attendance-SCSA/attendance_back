@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.scsa.attend.mapper.AttendanceInfoMapper">
+
+    <insert id="insertAttendanceInfoBatch" parameterType="AttendanceInfoBatch">
+        INSERT INTO ATTENDANCE_INFO (
+            MEM_ID,
+            A_DATE,
+            A_TYPE_ID,
+            IS_OFF        )
+        SELECT
+            T1.MEM_ID,
+            T1.Generated_Date,
+            1,
+            -- 요일 검사: 주말(SAT, SUN)이면 'Y', 아니면 'N'
+            CASE
+                WHEN TO_CHAR(T1.Generated_Date, 'DY', 'NLS_DATE_LANGUAGE=ENGLISH') IN ('SAT', 'SUN')
+                THEN 'Y'
+                ELSE 'N'
+            END AS IS_OFF_STATUS  FROM
+            (
+                -- 1. 시작일 ~ 종료일 사이의 모든 날짜 생성 (주말 포함)
+                SELECT
+                    #{memId} AS MEM_ID,
+                    TRUNC(#{startDay}) + LEVEL - 1 AS Generated_Date
+                FROM
+                    DUAL
+                CONNECT BY
+                    -- 모든 날짜를 생성하도록 조건 변경
+                    TRUNC(#{startDay}) + LEVEL - 1 <![CDATA[ <= ]]> TRUNC(#{endDay})
+            ) T1
+    </insert>
+
+</mapper>

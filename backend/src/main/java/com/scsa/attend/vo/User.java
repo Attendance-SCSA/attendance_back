@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,4 +18,6 @@ public class User {
     private String name;
     private String company;
     private String role;
+    private Date startDay;
+    private Date endDay;
 }

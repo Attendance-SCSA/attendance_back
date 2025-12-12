@@ -15,6 +15,7 @@
         <typeAlias type="com.scsa.attend.vo.User" alias="User"/>
         <typeAlias type="com.scsa.attend.vo.AttendanceInfo" alias="AttendanceInfo"/>
         <typeAlias type="com.scsa.attend.vo.AttendanceType" alias="AttendanceType"/>
+        <typeAlias type="com.scsa.attend.vo.AttendanceInfoBatch" alias="AttendanceInfoBatch"/>
 
     <!--        패키지로 지정-->
     <!--        <package name="com.my.study.starbucks.vo"/>-->

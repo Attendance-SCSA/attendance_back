@@ -14,13 +14,11 @@ import java.util.Date;
 @Builder
 public class AttendanceInfo {
     private Integer id;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS", timezone = "Asia/Seoul")
     private Date aDate;
+    private String isOff;
     private Integer memId;
     private Integer aTypeId;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS", timezone = "Asia/Seoul")
     private Date arrivalTime;
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:SS", timezone = "Asia/Seoul")
     private Date leavingTime;
     private String status;
     private String docPath;

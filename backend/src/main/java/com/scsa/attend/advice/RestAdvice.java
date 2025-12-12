@@ -1,7 +1,10 @@
 package com.scsa.attend.advice;
 
 import com.scsa.attend.dto.ErrorResponse;
-import com.scsa.attend.exception.*;
+import com.scsa.attend.exception.InvalidInputException;
+import com.scsa.attend.exception.NotFoundException;
+import com.scsa.attend.exception.PermissionDeniedException;
+import com.scsa.attend.exception.ResourceConflictException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,14 +36,28 @@ public class RestAdvice {
 
     @ExceptionHandler({
             MethodArgumentNotValidException.class, // @RequestBody 유효성 위반
-            ConstraintViolationException.class    // @RequestParam, @PathVariable 유효성 위반
+            ConstraintViolationException.class,    // @RequestParam, @PathVariable 유효성 위반
+    })
+    public ResponseEntity<ErrorResponse> AnnotationInvalidInputExceptionHandler(Exception e) {
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        ErrorResponse body = new ErrorResponse(
+                status.value(), // 400
+                "INVALID_INPUT",
+                "누락된 필드가 있거나 입력형태가 적절하지 않습니다."
+        );
+
+        return ResponseEntity.status(status).body(body);
+    }
+
+    @ExceptionHandler({
+            InvalidInputException.class
     })
     public ResponseEntity<ErrorResponse> InvalidInputExceptionHandler(Exception e) {
         HttpStatus status = HttpStatus.NOT_FOUND;
         ErrorResponse body = new ErrorResponse(
                 status.value(), // 400
                 "INVALID_INPUT",
-                "누락된 필드가 있거나 입력형태가 적절하지 않습니다."
+                e.getMessage()
         );
 
         return ResponseEntity.status(status).body(body);
