@@ -53,7 +53,7 @@ public class RestAdvice {
             InvalidInputException.class
     })
     public ResponseEntity<ErrorResponse> InvalidInputExceptionHandler(Exception e) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorResponse body = new ErrorResponse(
                 status.value(), // 400
                 "INVALID_INPUT",

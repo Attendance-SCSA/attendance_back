@@ -24,10 +24,6 @@
 
     <insert id="insertMember" parameterType="User">
 
-        <selectKey keyProperty="id" resultType="int" order="AFTER">
-            SELECT users_seq.CURRVAL FROM DUAL
-        </selectKey>
-
         INSERT INTO USERS (
             LOGIN_ID,
             LOGIN_PWD,
@@ -46,6 +42,11 @@
             #{startDay},
             #{endDay}
         )
+
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT users_seq.CURRVAL FROM DUAL
+        </selectKey>
+
     </insert>
 
     <select id="selectMember" parameterType="int" resultType="User">

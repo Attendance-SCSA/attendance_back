@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.scsa.attend.mapper.AttendanceTypeMapper">
+
+    <select id="selectAllATypes" resultType="AttendanceType">
+        SELECT
+            ID,
+            NAME,
+            EARLIEST_TIME,
+            START_TIME,
+            END_TIME,
+            LATEST_TIME
+        FROM
+            ATTENDANCE_TYPE
+        ORDER BY
+            ID
+    </select>
+
+    <insert id="insertAType" parameterType="AttendanceType">
+
+        INSERT INTO ATTENDANCE_TYPE (
+            NAME,
+            EARLIEST_TIME,
+            START_TIME,
+            END_TIME,
+            LATEST_TIME
+        ) VALUES (
+            #{name},
+            #{earliestTime},
+            #{startTime},
+            #{endTime},
+            #{latestTime}
+        )
+
+        <selectKey keyProperty="id" resultType="int" order="AFTER">
+            SELECT a_type_seq.CURRVAL FROM DUAL
+        </selectKey>
+
+    </insert>
+
+    <select id="selectAType" resultType="AttendanceType">
+        SELECT
+            ID,
+            NAME,
+            EARLIEST_TIME,
+            START_TIME,
+            END_TIME,
+            LATEST_TIME
+        FROM
+            ATTENDANCE_TYPE
+        WHERE
+            ID = #{aTypeId}
+    </select>
+
+    <update id="updateAType" parameterType="AttendanceType">
+        UPDATE ATTENDANCE_TYPE
+        SET
+            NAME = #{name},
+            EARLIEST_TIME = #{earliestTime},
+            START_TIME = #{startTime},
+            END_TIME = #{endTime},
+            LATEST_TIME = #{latestTime}
+        WHERE
+            ID = #{id}
+    </update>
+
+    <delete id="deleteAType" parameterType="int">
+        DELETE FROM ATTENDANCE_TYPE
+        WHERE ID = #{aTypeId}
+    </delete>
+
+    <!-- _______________ 내부 로직 ________________ -->
+
+    <select id="selectATypeByName" parameterType="string" resultType="AttendanceType">
+        SELECT
+            ID,
+            NAME,
+            EARLIEST_TIME,
+            START_TIME,
+            END_TIME,
+            LATEST_TIME
+        FROM
+            ATTENDANCE_TYPE
+        WHERE
+            NAME = #{name}
+    </select>
+
+
+
+
+</mapper>

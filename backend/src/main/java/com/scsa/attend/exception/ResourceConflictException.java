@@ -1,6 +1,6 @@
 package com.scsa.attend.exception;
 
-public class ResourceConflictException extends Exception {
+public class ResourceConflictException extends RuntimeException {
     public ResourceConflictException () {
 
     }

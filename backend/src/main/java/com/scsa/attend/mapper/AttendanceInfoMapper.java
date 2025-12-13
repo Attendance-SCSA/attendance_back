@@ -9,5 +9,6 @@ public interface AttendanceInfoMapper {
      * 출결 행을 일괄 생성합니다. (Oracle CONNECT BY 구문 사용)
      * @param batchParams memId, startDay, endDay 정보를 담은 VO
      */
-    void insertAttendanceInfoBatch(AttendanceInfoBatch batchParams);
+    void insertAInfoBatch(AttendanceInfoBatch batchParams);
+    int updateAInfoATypeToDefault(Integer oldTypeId, Integer defaultTypeId);
 }

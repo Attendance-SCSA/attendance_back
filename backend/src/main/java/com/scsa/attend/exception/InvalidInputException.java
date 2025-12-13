@@ -1,6 +1,6 @@
 package com.scsa.attend.exception;
 
-public class InvalidInputException extends Exception{
+public class InvalidInputException extends RuntimeException {
     public InvalidInputException () {
 
     }

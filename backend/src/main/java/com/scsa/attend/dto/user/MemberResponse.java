@@ -1,4 +1,4 @@
-package com.scsa.attend.dto;
+package com.scsa.attend.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.scsa.attend.vo.User;

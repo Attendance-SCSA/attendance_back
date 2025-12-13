@@ -1,6 +1,6 @@
 package com.scsa.attend.exception;
 
-public class PermissionDeniedException extends Exception {
+public class PermissionDeniedException extends RuntimeException {
     public PermissionDeniedException () {
 
     }

@@ -1,12 +1,13 @@
 package com.scsa.attend.controller;
 
-import com.scsa.attend.dto.AddMemberRequest;
-import com.scsa.attend.dto.EditMemberRequest;
-import com.scsa.attend.dto.MemberResponse;
+import com.scsa.attend.dto.user.AddMemberRequest;
+import com.scsa.attend.dto.user.EditMemberRequest;
+import com.scsa.attend.dto.user.MemberResponse;
 import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.exception.NotFoundException;
 import com.scsa.attend.exception.PermissionDeniedException;
+import com.scsa.attend.exception.ResourceConflictException;
 import com.scsa.attend.service.UserService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +24,7 @@ import java.util.List;
 public class UserController {
 
     private final Integer adminTmpId = 1;
-    private final Integer memberTmpId = 2;
+    private final Integer memberTmpId = 3;
 
     private final UserService userService;
 
@@ -38,7 +39,7 @@ public class UserController {
 
     @PostMapping
     public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request)
-            throws NotFoundException, PermissionDeniedException, InvalidInputException {
+            throws PermissionDeniedException, InvalidInputException, ResourceConflictException {
         Integer userId = adminTmpId;
         MemberResponse response = userService.createMember(userId, request);
         return response;

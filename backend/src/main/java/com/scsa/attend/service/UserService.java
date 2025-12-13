@@ -1,18 +1,18 @@
 package com.scsa.attend.service;
 
-import com.scsa.attend.dto.AddMemberRequest;
-import com.scsa.attend.dto.EditMemberRequest;
-import com.scsa.attend.dto.MemberResponse;
+import com.scsa.attend.dto.user.AddMemberRequest;
+import com.scsa.attend.dto.user.EditMemberRequest;
+import com.scsa.attend.dto.user.MemberResponse;
 import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.exception.NotFoundException;
 import com.scsa.attend.exception.PermissionDeniedException;
+import com.scsa.attend.exception.ResourceConflictException;
 import com.scsa.attend.mapper.AttendanceInfoMapper;
 import com.scsa.attend.mapper.UserMapper;
 import com.scsa.attend.vo.AttendanceInfoBatch;
 import com.scsa.attend.vo.User;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,7 @@ public class UserService {
     private final AttendanceInfoMapper aInfoMapper;
 
     @Transactional(readOnly = true)
-    public List<MemberResponse> findAllMembers(Integer userId)
-            throws PermissionDeniedException {
+    public List<MemberResponse> findAllMembers(Integer userId) {
         requireAdmin(userId);
         List<User> userList = userMapper.selectAllMembers();
         List<MemberResponse> responseList = userList.stream()
@@ -42,8 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public MemberResponse createMember(Integer userId, @Valid AddMemberRequest request)
-            throws PermissionDeniedException, NotFoundException, InvalidInputException {
+    public MemberResponse createMember(Integer userId, @Valid AddMemberRequest request) {
         requireAdmin(userId);
         checkLoginIdDuplicate(request.getLoginId());
         checkPeriodValidation(request.getStartDay(), request.getEndDay());
@@ -55,7 +53,7 @@ public class UserService {
         AttendanceInfoBatch batchParams = AttendanceInfoBatch.fromUser(user);
 
         // 3. 출결 행 일괄 삽입
-        aInfoMapper.insertAttendanceInfoBatch(batchParams);
+        aInfoMapper.insertAInfoBatch(batchParams);
 
         MemberResponse response = MemberResponse.fromUser(user);
         return response;
@@ -63,8 +61,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public MemberResponse findMember(Integer userId, Integer memberId)
-            throws PermissionDeniedException, NotFoundException {
+    public MemberResponse findMember(Integer userId, Integer memberId) {
         requireAdminOrSelf(userId, memberId);
         User user = userMapper.selectMember(memberId);
         checkExistingMember(user);
@@ -74,8 +71,7 @@ public class UserService {
 
     @Transactional
 
-    public MemberResponse modifyMember(Integer userId, Integer memberId, EditMemberRequest request)
-            throws PermissionDeniedException, NotFoundException {
+    public MemberResponse modifyMember(Integer userId, Integer memberId, EditMemberRequest request) {
         requireAdminOrSelf(userId, memberId);
         User user = userMapper.selectMember(memberId);
         checkExistingMember(user);
@@ -86,8 +82,7 @@ public class UserService {
     }
 
     @Transactional
-    public SuccessResponse removeMember(Integer userId,Integer memberId)
-            throws PermissionDeniedException, NotFoundException {
+    public SuccessResponse removeMember(Integer userId,Integer memberId) {
         requireAdmin(userId);
         User user = userMapper.selectUser(memberId);
         checkExistingMember(user);
@@ -98,7 +93,7 @@ public class UserService {
 
     // --------------- 내부 유효 요청 검증 로직 ----------------
     @Transactional(readOnly = true)
-    private void requireAdmin(Integer userId) throws PermissionDeniedException {
+    protected void requireAdmin(Integer userId) {
         User user = userMapper.selectUser(userId);
         if (user == null || !"admin".equals(user.getRole())) {
             throw new PermissionDeniedException("해당 작업에 대한 권한이 없습니다.");
@@ -106,28 +101,28 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    private void requireAdminOrSelf(Integer userId, Integer memberId) throws PermissionDeniedException {
+    protected void requireAdminOrSelf(Integer userId, Integer memberId) {
         User user = userMapper.selectUser(userId);
         if (user == null || (!"admin".equals(user.getRole()) && !memberId.equals(userId)) ) {
             throw new PermissionDeniedException("해당 작업에 대한 권한이 없습니다.");
         }
     }
 
-    private void checkExistingMember(User member) throws NotFoundException {
+    private void checkExistingMember(User member) {
         if (member == null) {
             throw new NotFoundException("해당하는 멤버를 찾을 수 없습니다.");
         }
     }
 
     @Transactional(readOnly = true)
-    private void checkLoginIdDuplicate(String loginId) throws NotFoundException {
+    private void checkLoginIdDuplicate(String loginId) {
         User user = userMapper.selectUserByLoginId(loginId);
         if (user != null) {
-            throw new NotFoundException("이미 존재하는 로그인 ID입니다.");
+            throw new ResourceConflictException("이미 존재하는 로그인 ID입니다.");
         }
     }
 
-    private void checkPeriodValidation(Date startDay, Date endDate) throws InvalidInputException {
+    private void checkPeriodValidation(Date startDay, Date endDate) {
         if (startDay.after(endDate)) {
             throw new InvalidInputException("날짜 입력이 유효하지 않습니다.");
         }

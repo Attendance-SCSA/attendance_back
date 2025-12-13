@@ -4,7 +4,7 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.scsa.attend.mapper.AttendanceInfoMapper">
 
-    <insert id="insertAttendanceInfoBatch" parameterType="AttendanceInfoBatch">
+    <insert id="insertAInfoBatch" parameterType="AttendanceInfoBatch">
         INSERT INTO ATTENDANCE_INFO (
             MEM_ID,
             A_DATE,
@@ -32,5 +32,11 @@
                     TRUNC(#{startDay}) + LEVEL - 1 <![CDATA[ <= ]]> TRUNC(#{endDay})
             ) T1
     </insert>
+
+    <update id="updateAInfoATypeToDefault">
+        UPDATE ATTENDANCE_INFO
+        SET A_TYPE_ID = #{defaultTypeId}
+        WHERE A_TYPE_ID = #{oldTypeId}
+    </update>
 
 </mapper>
