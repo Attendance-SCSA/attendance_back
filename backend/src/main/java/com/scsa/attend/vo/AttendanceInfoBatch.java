@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date; // Date 타입을 유지
 
 @Data
@@ -13,8 +14,8 @@ import java.util.Date; // Date 타입을 유지
 @Builder
 public class AttendanceInfoBatch {
     private Integer memId;
-    private Date startDay; // java.util.Date 사용
-    private Date endDay;   // java.util.Date 사용
+    private LocalDate startDay;
+    private LocalDate endDay;   
 
     public static AttendanceInfoBatch fromUser(User user){
         AttendanceInfoBatch batchParams = new AttendanceInfoBatch();

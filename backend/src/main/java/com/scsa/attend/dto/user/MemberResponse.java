@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -22,9 +23,9 @@ public class MemberResponse {
     private String company;
     private String role;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private Date startDay;
+    private LocalDate startDay;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private Date endDay;
+    private LocalDate endDay;
 
     public static MemberResponse fromUser(User user) {
         MemberResponse response = new MemberResponse();

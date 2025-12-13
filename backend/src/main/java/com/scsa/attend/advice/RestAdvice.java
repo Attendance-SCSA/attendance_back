@@ -1,5 +1,6 @@
 package com.scsa.attend.advice;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.scsa.attend.dto.ErrorResponse;
 import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.exception.NotFoundException;
@@ -37,6 +38,7 @@ public class RestAdvice {
     @ExceptionHandler({
             MethodArgumentNotValidException.class, // @RequestBody 유효성 위반
             ConstraintViolationException.class,    // @RequestParam, @PathVariable 유효성 위반
+            InvalidFormatException.class            // LocalTime 등으로의 변환 실패시
     })
     public ResponseEntity<ErrorResponse> AnnotationInvalidInputExceptionHandler(Exception e) {
         HttpStatus status = HttpStatus.NOT_FOUND;

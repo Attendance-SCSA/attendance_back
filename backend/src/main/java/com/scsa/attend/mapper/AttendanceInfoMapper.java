@@ -1,8 +1,15 @@
 package com.scsa.attend.mapper;
 
+import com.scsa.attend.vo.AttendanceFullInfo;
 import com.scsa.attend.vo.AttendanceInfoBatch;
+import com.scsa.attend.vo.AttendanceInfoSearchCondition;
+
+import java.util.List;
 
 public interface AttendanceInfoMapper {
+
+    List<AttendanceFullInfo> selectAFullInfosByCondition(AttendanceInfoSearchCondition condition);
+
 
     /**
      * 지정된 기간 내의 평일 날짜에 대해 ATTENDANCE_INFO 테이블에
@@ -11,4 +18,7 @@ public interface AttendanceInfoMapper {
      */
     void insertAInfoBatch(AttendanceInfoBatch batchParams);
     int updateAInfoATypeToDefault(Integer oldTypeId, Integer defaultTypeId);
+
+
+
 }

@@ -4,6 +4,108 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.scsa.attend.mapper.AttendanceInfoMapper">
 
+    <resultMap id="AttendanceFullInfoResultMap" type="AttendanceFullInfo">
+
+        <association property="attendanceInfo" javaType="AttendanceInfo">
+            <id property="id" column="A_ID"/>
+            <result property="aDate" column="A_DATE"/>
+            <result property="isOff" column="IS_OFF"/>
+            <result property="memId" column="MEM_ID"/>           <result property="aTypeId" column="A_TYPE_ID"/>      <result property="arrivalTime" column="ARRIVAL_TIME"/>
+            <result property="leavingTime" column="LEAVING_TIME"/>
+            <result property="status" column="STATUS"/>
+            <result property="docPath" column="DOC_PATH"/>
+            <result property="isApproved" column="IS_APPROVED"/>
+            <result property="isOfficial" column="IS_OFFICIAL_FLAG"/> <result property="memNote" column="MEM_NOTE"/>
+            <result property="adminNote" column="ADMIN_NOTE"/>
+        </association>
+
+        <association property="user" javaType="User">
+            <id property="id" column="U_ID"/>
+            <result property="loginId" column="U_LOGIN_ID"/>
+            <result property="loginPwd" column="U_LOGIN_PWD"/>
+            <result property="name" column="U_NAME"/>
+            <result property="company" column="U_COMPANY"/>
+            <result property="role" column="U_ROLE"/>
+            <result property="startDay" column="U_START_DAY"/>
+            <result property="endDay" column="U_END_DAY"/>
+        </association>
+
+        <association property="attendanceType" javaType="AttendanceType">
+            <id property="id" column="AT_ID"/>
+            <result property="name" column="AT_NAME"/>
+            <result property="earliestTime" column="AT_EARLIEST_TIME"/>
+            <result property="startTime" column="AT_START_TIME"/>
+            <result property="endTime" column="AT_END_TIME"/>
+            <result property="latestTime" column="AT_LATEST_TIME"/>
+        </association>
+    </resultMap>
+
+
+    <select id="selectAFullInfosByCondition"
+            parameterType="AttendanceInfoSearchCondition"
+            resultMap="AttendanceFullInfoResultMap">
+
+        SELECT
+        -- A. ATTENDANCE_INFO (AI) 필드
+        AI.ID AS A_ID,
+        AI.A_DATE, AI.IS_OFF, AI.MEM_ID, AI.A_TYPE_ID,
+        AI.ARRIVAL_TIME, AI.LEAVING_TIME, AI.STATUS,
+        AI.DOC_PATH, AI.IS_APPROVED, AI.IS_OFFICIAL AS IS_OFFICIAL_FLAG,
+        AI.MEM_NOTE, AI.ADMIN_NOTE,
+
+        -- B. USERS (U) 필드
+        U.ID AS U_ID,
+        U.LOGIN_ID AS U_LOGIN_ID,
+        U.LOGIN_PWD AS U_LOGIN_PWD,
+        U.NAME AS U_NAME,
+        U.COMPANY AS U_COMPANY,
+        U.ROLE AS U_ROLE,
+        U.START_DAY AS U_START_DAY,
+        U.END_DAY AS U_END_DAY,
+
+        -- C. ATTENDANCE_TYPE (AT) 필드
+        AT.ID AS AT_ID,
+        AT.NAME AS AT_NAME,
+        AT.EARLIEST_TIME AS AT_EARLIEST_TIME,
+        AT.START_TIME AS AT_START_TIME,
+        AT.END_TIME AS AT_END_TIME,
+        AT.LATEST_TIME AS AT_LATEST_TIME
+
+        FROM ATTENDANCE_INFO AI
+        JOIN USERS U ON AI.MEM_ID = U.ID
+        JOIN ATTENDANCE_TYPE AT ON AI.A_TYPE_ID = AT.ID
+
+        <where>
+            <if test="startDate != null">
+                AND AI.A_DATE >= #{startDate}
+            </if>
+            <if test="endDate != null">
+                AND AI.A_DATE <![CDATA[ < ]]> #{endDate}
+            </if>
+
+            <if test="memId != null">
+                AND AI.MEM_ID = #{memId}
+            </if>
+
+            <if test="statusList != null and statusList.size > 0">
+                AND AI.STATUS IN
+                <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                    #{status}
+                </foreach>
+            </if>
+
+            <if test="isApproved != null and isApproved != ''">
+                AND AI.IS_APPROVED = #{isApproved}
+            </if>
+
+            <if test="isOfficial != null and isOfficial != ''">
+                AND AI.IS_OFFICIAL = #{isOfficial}
+            </if>
+        </where>
+        ORDER BY AI.A_DATE DESC
+    </select>
+
+
     <insert id="insertAInfoBatch" parameterType="AttendanceInfoBatch">
         INSERT INTO ATTENDANCE_INFO (
             MEM_ID,

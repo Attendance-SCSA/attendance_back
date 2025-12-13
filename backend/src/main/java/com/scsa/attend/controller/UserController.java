@@ -29,8 +29,7 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<MemberResponse> getAllMembers()
-            throws PermissionDeniedException {
+    public List<MemberResponse> getAllMembers() {
         Integer userId = adminTmpId;
         List<MemberResponse> responseList = userService.findAllMembers(userId);
         return responseList;
@@ -38,16 +37,14 @@ public class UserController {
     }
 
     @PostMapping
-    public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request)
-            throws PermissionDeniedException, InvalidInputException, ResourceConflictException {
+    public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request) {
         Integer userId = adminTmpId;
         MemberResponse response = userService.createMember(userId, request);
         return response;
     }
 
     @GetMapping("/{memberId}")
-    public MemberResponse getMember(@NotNull @PathVariable("memberId") Integer memberId)
-            throws NotFoundException, PermissionDeniedException {
+    public MemberResponse getMember(@NotNull @PathVariable("memberId") Integer memberId) {
         Integer userId = memberTmpId;
         MemberResponse response = userService.findMember(userId, memberId);
         return response;
@@ -55,16 +52,14 @@ public class UserController {
 
     @PatchMapping("/{memberId}")
     public MemberResponse editMember(@NotNull @PathVariable("memberId") Integer memberId,
-                                     @Valid @RequestBody EditMemberRequest request)
-            throws NotFoundException, PermissionDeniedException {
+                                     @Valid @RequestBody EditMemberRequest request) {
         Integer userId = memberTmpId;
         MemberResponse response = userService.modifyMember(userId, memberId, request);
         return response;
     }
 
     @DeleteMapping("/{memberId}")
-    public SuccessResponse deleteMember(@NotNull @PathVariable("memberId") Integer memberId)
-            throws NotFoundException, PermissionDeniedException {
+    public SuccessResponse deleteMember(@NotNull @PathVariable("memberId") Integer memberId) {
         Integer userId = adminTmpId;
         SuccessResponse response = userService.removeMember(userId, memberId);
         return response;

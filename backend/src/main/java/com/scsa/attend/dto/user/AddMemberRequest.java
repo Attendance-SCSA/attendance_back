@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -28,10 +29,10 @@ public class AddMemberRequest {
     private String company;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     @NotNull
-    private Date startDay;
+    private LocalDate startDay;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     @NotNull
-    private Date endDay;
+    private LocalDate endDay;
 
     public User toUser() {
         User user = new User();

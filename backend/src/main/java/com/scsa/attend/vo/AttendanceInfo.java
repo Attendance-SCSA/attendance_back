@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -14,12 +16,12 @@ import java.util.Date;
 @Builder
 public class AttendanceInfo {
     private Integer id;
-    private Date aDate;
+    private LocalDate aDate;
     private String isOff;
     private Integer memId;
     private Integer aTypeId;
-    private Date arrivalTime;
-    private Date leavingTime;
+    private LocalDateTime arrivalTime;
+    private LocalDateTime leavingTime;
     private String status;
     private String docPath;
     private String isApproved;

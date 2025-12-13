@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +51,7 @@ public class UserService {
         user.setRole("member");
         userMapper.insertMember(user);
 
-        // 2. AttendanceInfoBatch 객체 생성 (java.util.Date 사용)
+        // 2. AttendanceInfoBatch 객체 생성
         AttendanceInfoBatch batchParams = AttendanceInfoBatch.fromUser(user);
 
         // 3. 출결 행 일괄 삽입
@@ -122,8 +124,8 @@ public class UserService {
         }
     }
 
-    private void checkPeriodValidation(Date startDay, Date endDate) {
-        if (startDay.after(endDate)) {
+    protected void checkPeriodValidation(LocalDate startDate, LocalDate endDate) {
+        if (startDate.isAfter(endDate)) {
             throw new InvalidInputException("날짜 입력이 유효하지 않습니다.");
         }
 
