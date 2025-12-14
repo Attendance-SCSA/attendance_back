@@ -41,7 +41,7 @@ public class RestAdvice {
             InvalidFormatException.class            // LocalTime 등으로의 변환 실패시
     })
     public ResponseEntity<ErrorResponse> AnnotationInvalidInputExceptionHandler(Exception e) {
-        HttpStatus status = HttpStatus.NOT_FOUND;
+        HttpStatus status = HttpStatus.BAD_REQUEST;
         ErrorResponse body = new ErrorResponse(
                 status.value(), // 400
                 "INVALID_INPUT",

@@ -105,6 +105,130 @@
         ORDER BY AI.A_DATE DESC
     </select>
 
+    <select id="selectAFullInfo"
+            resultMap="AttendanceFullInfoResultMap">
+
+        SELECT
+        -- A. ATTENDANCE_INFO (AI) 필드
+        AI.ID AS A_ID,
+        AI.A_DATE, AI.IS_OFF, AI.MEM_ID, AI.A_TYPE_ID,
+        AI.ARRIVAL_TIME, AI.LEAVING_TIME, AI.STATUS,
+        AI.DOC_PATH, AI.IS_APPROVED, AI.IS_OFFICIAL AS IS_OFFICIAL_FLAG,
+        AI.MEM_NOTE, AI.ADMIN_NOTE,
+
+        -- B. USERS (U) 필드
+        U.ID AS U_ID,
+        U.LOGIN_ID AS U_LOGIN_ID, U.LOGIN_PWD AS U_LOGIN_PWD,
+        U.NAME AS U_NAME, U.COMPANY AS U_COMPANY, U.ROLE AS U_ROLE,
+        U.START_DAY AS U_START_DAY, U.END_DAY AS U_END_DAY,
+
+        -- C. ATTENDANCE_TYPE (AT) 필드
+        AT.ID AS AT_ID,
+        AT.NAME AS AT_NAME, AT.EARLIEST_TIME AS AT_EARLIEST_TIME,
+        AT.START_TIME AS AT_START_TIME, AT.END_TIME AS AT_END_TIME,
+        AT.LATEST_TIME AS AT_LATEST_TIME
+
+        FROM ATTENDANCE_INFO AI
+        JOIN USERS U ON AI.MEM_ID = U.ID
+        JOIN ATTENDANCE_TYPE AT ON AI.A_TYPE_ID = AT.ID
+
+        WHERE AI.ID = #{aInfoId}
+    </select>
+
+    <update id="updateAttendanceInfo" parameterType="AttendanceInfo">
+        UPDATE attendance_info
+        <set>
+            <if test="isOff != null">
+                is_off = #{isOff},
+            </if>
+            <if test="aTypeId != null">
+                a_type_id = #{aTypeId},
+            </if>
+
+            arrival_time = #{arrivalTime},
+            leaving_time = #{leavingTime},
+            status = #{status},
+            is_approved = #{isApproved},
+            is_official = #{isOfficial},
+            admin_note = #{adminNote}
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus" parameterType="AttendanceInfo">
+        UPDATE ATTENDANCE_INFO
+        SET
+        STATUS = #{status}
+        WHERE ID = #{id}
+    </update>
+
+    <select id="selectAFullInfoByDateAndMemId" resultMap="AttendanceFullInfoResultMap">
+        SELECT
+        -- A. ATTENDANCE_INFO (AI) 필드
+        AI.ID AS A_ID,
+        AI.A_DATE, AI.IS_OFF, AI.MEM_ID, AI.A_TYPE_ID,
+        AI.ARRIVAL_TIME, AI.LEAVING_TIME, AI.STATUS,
+        AI.DOC_PATH, AI.IS_APPROVED, AI.IS_OFFICIAL AS IS_OFFICIAL_FLAG,
+        AI.MEM_NOTE, AI.ADMIN_NOTE,
+
+        -- B. USERS (U) 필드
+        U.ID AS U_ID,
+        U.LOGIN_ID AS U_LOGIN_ID,
+        U.LOGIN_PWD AS U_LOGIN_PWD,
+        U.NAME AS U_NAME,
+        U.COMPANY AS U_COMPANY,
+        U.ROLE AS U_ROLE,
+        U.START_DAY AS U_START_DAY,
+        U.END_DAY AS U_END_DAY,
+
+        -- C. ATTENDANCE_TYPE (AT) 필드
+        AT.ID AS AT_ID,
+        AT.NAME AS AT_NAME,
+        AT.EARLIEST_TIME AS AT_EARLIEST_TIME,
+        AT.START_TIME AS AT_START_TIME,
+        AT.END_TIME AS AT_END_TIME,
+        AT.LATEST_TIME AS AT_LATEST_TIME
+
+        FROM ATTENDANCE_INFO AI
+        JOIN USERS U ON AI.MEM_ID = U.ID
+        JOIN ATTENDANCE_TYPE AT ON AI.A_TYPE_ID = AT.ID
+
+        WHERE AI.A_DATE = #{aDate}
+        AND AI.MEM_ID = #{memId}
+    </select>
+
+    <select id="selectFullInfosByDate"
+            resultMap="AttendanceFullInfoResultMap">
+
+        SELECT
+        -- A. ATTENDANCE_INFO (AI) 필드
+        AI.ID AS A_ID,
+        AI.A_DATE, AI.IS_OFF, AI.MEM_ID, AI.A_TYPE_ID,
+        AI.ARRIVAL_TIME, AI.LEAVING_TIME, AI.STATUS,
+        AI.DOC_PATH, AI.IS_APPROVED, AI.IS_OFFICIAL AS IS_OFFICIAL_FLAG,
+        AI.MEM_NOTE, AI.ADMIN_NOTE,
+
+        -- B. USERS (U) 필드
+        U.ID AS U_ID,
+        U.LOGIN_ID AS U_LOGIN_ID, U.LOGIN_PWD AS U_LOGIN_PWD,
+        U.NAME AS U_NAME, U.COMPANY AS U_COMPANY, U.ROLE AS U_ROLE,
+        U.START_DAY AS U_START_DAY, U.END_DAY AS U_END_DAY,
+
+        -- C. ATTENDANCE_TYPE (AT) 필드
+        AT.ID AS AT_ID,
+        AT.NAME AS AT_NAME, AT.EARLIEST_TIME AS AT_EARLIEST_TIME,
+        AT.START_TIME AS AT_START_TIME, AT.END_TIME AS AT_END_TIME,
+        AT.LATEST_TIME AS AT_LATEST_TIME
+
+        FROM ATTENDANCE_INFO AI
+        JOIN USERS U ON AI.MEM_ID = U.ID
+        JOIN ATTENDANCE_TYPE AT ON AI.A_TYPE_ID = AT.ID
+
+        WHERE AI.A_DATE = #{targetDate}
+        ORDER BY AI.MEM_ID ASC
+    </select>
+
+    <!-- _______________ 내부 로직 ______________ -->
 
     <insert id="insertAInfoBatch" parameterType="AttendanceInfoBatch">
         INSERT INTO ATTENDANCE_INFO (
@@ -134,6 +258,21 @@
                     TRUNC(#{startDay}) + LEVEL - 1 <![CDATA[ <= ]]> TRUNC(#{endDay})
             ) T1
     </insert>
+
+    <update id="updateArrivalTime">
+        UPDATE ATTENDANCE_INFO
+        SET
+        ARRIVAL_TIME = #{recordTime}
+        WHERE ID = #{aInfoId}
+    </update>
+
+    <update id="updateLeavingTime">
+        UPDATE ATTENDANCE_INFO
+        SET
+        LEAVING_TIME = #{recordTime}
+        WHERE ID = #{aInfoId}
+    </update>
+
 
     <update id="updateAInfoATypeToDefault">
         UPDATE ATTENDANCE_INFO

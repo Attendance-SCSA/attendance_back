@@ -37,24 +37,17 @@ public class SearchAttendanceInfoRequest {
 
     public AttendanceInfoSearchCondition convertToSearchCondition() {
 
-        // 이 메서드를 호출하기 전에 validateSearchDatePeriod(request)가 반드시 호출되어야 합니다.
-
-        // VO 객체 생성 및 Setter를 이용한 데이터 복사
         AttendanceInfoSearchCondition condition = new AttendanceInfoSearchCondition();
-
-        // 1. 시작 날짜 설정 (가공 없음)
         condition.setStartDate(startDate);
 
-        // 2. 종료 날짜 설정 (DB 쿼리 최적화를 위한 +1일 처리)
         if (endDate != null) {
-            // 쿼리에서 < (미만) 연산자를 사용하기 위해 하루를 더함
+            // 종료 날짜 설정 (DB 쿼리 최적화를 위한 +1일 처리), 쿼리에서 < (미만) 연산자를 사용하기 위해 하루를 더함
             LocalDate adjustedEndDate = endDate.plusDays(1);
             condition.setEndDate(adjustedEndDate);
         } else {
             condition.setEndDate(null);
         }
 
-        // 3. 나머지 필드 설정
         condition.setMemId(memId);
         condition.setStatusList(statusList);
         condition.setIsApproved(isApproved);

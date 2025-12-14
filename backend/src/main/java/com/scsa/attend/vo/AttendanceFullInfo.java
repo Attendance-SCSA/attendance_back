@@ -1,14 +1,13 @@
 package com.scsa.attend.vo;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.*;
 
 /**
  * DB 조인 결과를 담는 통합 VO (Full Info)
  * DTO 변환 시 필요한 모든 VO를 포함합니다.
  */
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class AttendanceFullInfo {

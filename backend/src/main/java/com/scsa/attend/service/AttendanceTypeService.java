@@ -95,7 +95,7 @@ public class AttendanceTypeService {
 
     // -------------------------- 내부 로직 -------------------------
 
-    private void checkExistingAType(AttendanceType aType) {
+    protected void checkExistingAType(AttendanceType aType) {
         if (aType == null) {
             throw new NotFoundException("해당하는 출석 유형을 찾을 수 없습니다.");
         }

@@ -1,10 +1,10 @@
 package com.scsa.attend.controller;
 
-import com.scsa.attend.dto.ainfo.AttendanceInfoResponse;
-import com.scsa.attend.dto.ainfo.SearchAttendanceInfoRequest;
+import com.scsa.attend.dto.SuccessResponse;
+import com.scsa.attend.dto.ainfo.*;
 import com.scsa.attend.service.AttendanceInfoService;
-import com.scsa.attend.vo.AttendanceInfo;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +23,54 @@ public class AttendanceInfoController {
     private final AttendanceInfoService aInfoService;
 
     @PostMapping("/search")
-    public List<AttendanceInfoResponse> getAInfosByCondition (@Valid @RequestBody SearchAttendanceInfoRequest request) {
+    public List<AttendanceInfoResponse> getAFullInfosByCondition (@Valid @RequestBody SearchAttendanceInfoRequest request) {
         Integer userId = adminTmpId;
         List<AttendanceInfoResponse> responseList = aInfoService.findAInfosByCondition(userId, request);
         return responseList;
+
+    }
+
+    @GetMapping("/{aInfoId}")
+    public AttendanceInfoResponse getAFullInfo (@NotNull @PathVariable("aInfoId") Integer aInfoId) {
+        Integer userId = adminTmpId;
+        AttendanceInfoResponse response = aInfoService.findAFullInfo(userId, aInfoId);
+        return response;
+    }
+
+    @PatchMapping("/{aInfoId}")
+    public AttendanceInfoResponse editAInfo (@NotNull @PathVariable("aInfoId") Integer aInfoId,
+                                             @Valid @RequestBody EditAttendanceInfoByAdminRequest updateData) {
+        Integer userId = adminTmpId;
+        AttendanceInfoResponse response = aInfoService.modifyAInfo(userId, aInfoId, updateData);
+        return response;
+    }
+
+    @PatchMapping
+    public SuccessResponse editAInfoMulti(@Valid @RequestBody EditAttendanceInfoMultiRequest request) {
+        Integer userId = adminTmpId;
+        SuccessResponse response = aInfoService.modifyAInfoMulti(userId, request);
+        return response;
+    }
+
+    @PatchMapping("/{aInfoId}/arrival")
+    public SuccessResponse updateArrivalTime(@NotNull @PathVariable("aInfoId") Integer aInfoId) {
+        Integer userId = 3;
+        SuccessResponse response = aInfoService.modifyArrivalTime(userId, aInfoId);
+        return response;
+    }
+
+    @PatchMapping("/{aInfoId}/leaving")
+    public SuccessResponse updateLeavingTime(@NotNull @PathVariable("aInfoId") Integer aInfoId) {
+        Integer userId = 3;
+        SuccessResponse response = aInfoService.modifyLeavingTime(userId, aInfoId);
+        return response;
+    }
+
+    @PatchMapping("/calculate-status")
+    public SuccessResponse updateLeavingTime(@Valid @RequestBody CalculateAttendanceInfoStatusRequest request) {
+        Integer userId = adminTmpId;
+        SuccessResponse response = aInfoService.calculateAInfoStatus(request);
+        return response;
 
     }
 

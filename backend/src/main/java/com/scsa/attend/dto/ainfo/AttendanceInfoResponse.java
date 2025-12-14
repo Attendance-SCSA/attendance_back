@@ -34,9 +34,7 @@ public class AttendanceInfoResponse {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate aDate;
 
-    // ------------------------------------------------------------------
-    //  Lombok의 getADate() 생성을 억제하고 수동으로 작성
-    // ------------------------------------------------------------------
+    //  Lombok의 getADate() 생성을 억제하고 수동으로 작성 (응답 제이슨이 adate, aDate 두개가 생기는 문제)
     @JsonProperty("aDate")
     public LocalDate getaDate() {
         return this.aDate;
