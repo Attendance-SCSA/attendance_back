@@ -28,39 +28,41 @@ public class AttendanceTypeController {
     private final AttendanceTypeService aTypeService;
 
     @GetMapping
-    public List<AttendanceTypeResponse> getAllAType()
-            throws PermissionDeniedException {
-        Integer userId = AuthController.userId;
+    public List<AttendanceTypeResponse> getAllAType(@RequestHeader(value = "userId", required = false) Integer userId) {
+//        Integer userId = AuthController.userId;
         List<AttendanceTypeResponse> responseList = aTypeService.findAllATypes(userId);
         return responseList;
     }
 
     @PostMapping
-    public AttendanceTypeResponse addAType(@Valid @RequestBody AddAttendanceTypeRequest request)
-            throws ResourceConflictException, PermissionDeniedException, InvalidInputException {
-        Integer userId = AuthController.userId;
+    public AttendanceTypeResponse addAType(@RequestHeader(value = "userId", required = false) Integer userId,
+                                           @Valid @RequestBody AddAttendanceTypeRequest request) {
+//        Integer userId = AuthController.userId;
         AttendanceTypeResponse response = aTypeService.createAType(userId, request);
         return response;
     }
 
     @GetMapping("/{aTypeId}")
-    public AttendanceTypeResponse getAType(@NotNull @PathVariable("aTypeId") Integer aTypeId)  {
-        Integer userId = AuthController.userId;
+    public AttendanceTypeResponse getAType(@RequestHeader(value = "userId", required = false) Integer userId,
+                                           @NotNull @PathVariable("aTypeId") Integer aTypeId)  {
+//        Integer userId = AuthController.userId;
         AttendanceTypeResponse response = aTypeService.findAType(userId, aTypeId);
         return response;
     }
 
     @PatchMapping("/{aTypeId}")
-    public AttendanceTypeResponse editAType(@NotNull @PathVariable("aTypeId") Integer aTypeId,
+    public AttendanceTypeResponse editAType(@RequestHeader(value = "userId", required = false) Integer userId,
+                                            @NotNull @PathVariable("aTypeId") Integer aTypeId,
                                             @Valid @RequestBody EditAttendanceTypeRequest request)  {
-        Integer userId = AuthController.userId;
+//        Integer userId = AuthController.userId;
         AttendanceTypeResponse response = aTypeService.modifyAType(userId, aTypeId, request);
         return response;
     }
 
     @DeleteMapping("/{aTypeId}")
-    public SuccessResponse removeATypeMember(@NotNull @PathVariable("aTypeId") Integer aTypeId)  {
-        Integer userId = AuthController.userId;
+    public SuccessResponse removeATypeMember(@RequestHeader(value = "userId", required = false) Integer userId,
+                                             @NotNull @PathVariable("aTypeId") Integer aTypeId)  {
+//        Integer userId = AuthController.userId;
         SuccessResponse response = aTypeService.removeAType(userId, aTypeId);
         return response;
     }

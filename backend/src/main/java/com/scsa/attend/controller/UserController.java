@@ -26,38 +26,42 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<MemberResponse> getAllMembers() {
-        Integer userId = AuthController.userId;
+    public List<MemberResponse> getAllMembers(@RequestHeader(value = "userId", required = false) Integer userId) {
+//        Integer userId = AuthController.userId;
         List<MemberResponse> responseList = userService.findAllMembers(userId);
         return responseList;
 
     }
 
     @PostMapping
-    public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request) {
-        Integer userId = AuthController.userId;
+    public MemberResponse addMember(@RequestHeader(value = "userId", required = false) Integer userId,
+                                    @Valid @RequestBody AddMemberRequest request) {
+//        Integer userId = AuthController.userId;
         MemberResponse response = userService.createMember(userId, request);
         return response;
     }
 
     @GetMapping("/{memberId}")
-    public MemberResponse getMember(@NotNull @PathVariable("memberId") Integer memberId) {
-        Integer userId = AuthController.userId;
+    public MemberResponse getMember(@RequestHeader(value = "userId", required = false) Integer userId,
+                                    @NotNull @PathVariable("memberId") Integer memberId) {
+//        Integer userId = AuthController.userId;
         MemberResponse response = userService.findMember(userId, memberId);
         return response;
     }
 
     @PatchMapping("/{memberId}")
-    public MemberResponse editMember(@NotNull @PathVariable("memberId") Integer memberId,
+    public MemberResponse editMember(@RequestHeader(value = "userId", required = false) Integer userId,
+                                     @NotNull @PathVariable("memberId") Integer memberId,
                                      @Valid @RequestBody EditMemberRequest request) {
-        Integer userId = AuthController.userId;
+//        Integer userId = AuthController.userId;
         MemberResponse response = userService.modifyMember(userId, memberId, request);
         return response;
     }
 
     @DeleteMapping("/{memberId}")
-    public SuccessResponse deleteMember(@NotNull @PathVariable("memberId") Integer memberId) {
-        Integer userId = AuthController.userId;
+    public SuccessResponse deleteMember(@RequestHeader(value = "userId", required = false) Integer userId,
+                                        @NotNull @PathVariable("memberId") Integer memberId) {
+//        Integer userId = AuthController.userId;
         SuccessResponse response = userService.removeMember(userId, memberId);
         return response;
     }

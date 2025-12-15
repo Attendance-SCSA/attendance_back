@@ -1,7 +1,9 @@
 package com.scsa.attend.controller;
 
+import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.dto.auth.LoginRequest;
 import com.scsa.attend.service.AuthService;
+import com.scsa.attend.vo.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -21,18 +23,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public Integer login (@Valid @RequestBody LoginRequest request) {
-
-        Integer loginId = authService.login(request);
-        userId = loginId;
-        Map<String, Integer> response = new HashMap<>();
-        response.put("loginId", userId);
-        return userId;
-
+    public User login (@Valid @RequestBody LoginRequest request) {
+        User user = authService.login(request);
+        return user;
     }
 
     @PostMapping("/logout")
-    public void logout () {
-        userId = null;
+    public SuccessResponse logout (@RequestHeader(value = "userId", required = false) Integer userId) {
+        SuccessResponse response = authService.logout(userId);
+        return response;
     }
 }

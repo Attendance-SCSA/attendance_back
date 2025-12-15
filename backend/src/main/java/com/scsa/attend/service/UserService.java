@@ -31,6 +31,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final AttendanceInfoMapper aInfoMapper;
 
+    private final AuthService authService;
+
     @Transactional(readOnly = true)
     public List<MemberResponse> findAllMembers(Integer userId) {
         requireAdmin(userId);
@@ -96,6 +98,9 @@ public class UserService {
     // --------------- 내부 유효 요청 검증 로직 ----------------
     @Transactional(readOnly = true)
     protected void requireAdmin(Integer userId) {
+        if (!authService.loginedUserIds.contains(userId)) {
+            throw new PermissionDeniedException("로그인 되어 있지 않습니다.");
+        }
         User user = userMapper.selectUser(userId);
         if (user == null || !"admin".equals(user.getRole())) {
             throw new PermissionDeniedException("해당 작업에 대한 권한이 없습니다.");
@@ -104,6 +109,9 @@ public class UserService {
 
     @Transactional(readOnly = true)
     protected void requireAdminOrSelf(Integer userId, Integer memberId) {
+        if (!authService.loginedUserIds.contains(userId)) {
+            throw new PermissionDeniedException("로그인 되어 있지 않습니다.");
+        }
         User user = userMapper.selectUser(userId);
         if (user == null || (!"admin".equals(user.getRole()) && !memberId.equals(userId)) ) {
             throw new PermissionDeniedException("해당 작업에 대한 권한이 없습니다.");
