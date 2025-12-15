@@ -1,6 +1,5 @@
 package com.scsa.attend.controller;
 
-import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.dto.auth.LoginRequest;
 import com.scsa.attend.service.AuthService;
 import jakarta.validation.Valid;

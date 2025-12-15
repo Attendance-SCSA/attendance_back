@@ -1,6 +1,5 @@
 package com.scsa.attend.service;
 
-import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.dto.auth.LoginRequest;
 import com.scsa.attend.mapper.UserMapper;
 import com.scsa.attend.vo.User;
