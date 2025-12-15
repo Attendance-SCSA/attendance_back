@@ -133,7 +133,7 @@ public class UserService {
     }
 
     protected void checkPeriodValidation(LocalDate startDate, LocalDate endDate) {
-        if (startDate.isAfter(endDate)) {
+        if (startDate != null && endDate != null && startDate.isAfter(endDate)) {
             throw new InvalidInputException("날짜 입력이 유효하지 않습니다.");
         }
 
