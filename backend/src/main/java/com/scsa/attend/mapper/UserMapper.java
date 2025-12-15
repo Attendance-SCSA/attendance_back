@@ -13,9 +13,12 @@ public interface UserMapper {
     void updateUser(User user);
     void deleteUser(Integer memberId);
 
+    User selectUserByLoginIdAndLoginPwd(User user);
+
     // ------------ 내부 로직 --------------
     User selectUser(@Param("userId") Integer userId);
     User selectUserByLoginId(@Param("loginId") String loginId);
+
 
 
 }

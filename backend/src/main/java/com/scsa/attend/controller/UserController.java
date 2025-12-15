@@ -23,14 +23,11 @@ import java.util.List;
 @RequestMapping("/members")
 public class UserController {
 
-    private final Integer adminTmpId = 1;
-    private final Integer memberTmpId = 3;
-
     private final UserService userService;
 
     @GetMapping
     public List<MemberResponse> getAllMembers() {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         List<MemberResponse> responseList = userService.findAllMembers(userId);
         return responseList;
 
@@ -38,14 +35,14 @@ public class UserController {
 
     @PostMapping
     public MemberResponse addMember(@Valid @RequestBody AddMemberRequest request) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         MemberResponse response = userService.createMember(userId, request);
         return response;
     }
 
     @GetMapping("/{memberId}")
     public MemberResponse getMember(@NotNull @PathVariable("memberId") Integer memberId) {
-        Integer userId = memberTmpId;
+        Integer userId = AuthController.userId;
         MemberResponse response = userService.findMember(userId, memberId);
         return response;
     }
@@ -53,14 +50,14 @@ public class UserController {
     @PatchMapping("/{memberId}")
     public MemberResponse editMember(@NotNull @PathVariable("memberId") Integer memberId,
                                      @Valid @RequestBody EditMemberRequest request) {
-        Integer userId = memberTmpId;
+        Integer userId = AuthController.userId;
         MemberResponse response = userService.modifyMember(userId, memberId, request);
         return response;
     }
 
     @DeleteMapping("/{memberId}")
     public SuccessResponse deleteMember(@NotNull @PathVariable("memberId") Integer memberId) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         SuccessResponse response = userService.removeMember(userId, memberId);
         return response;
     }

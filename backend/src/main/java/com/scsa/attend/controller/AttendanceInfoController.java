@@ -17,14 +17,11 @@ import java.util.List;
 @RequestMapping("/attendance_info")
 public class AttendanceInfoController {
 
-    private final Integer adminTmpId = 1;
-    private final Integer memberTmpId = 3;
-
     private final AttendanceInfoService aInfoService;
 
     @PostMapping("/search")
     public List<AttendanceInfoResponse> getAFullInfosByCondition (@Valid @RequestBody SearchAttendanceInfoRequest request) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         List<AttendanceInfoResponse> responseList = aInfoService.findAInfosByCondition(userId, request);
         return responseList;
 
@@ -32,7 +29,7 @@ public class AttendanceInfoController {
 
     @GetMapping("/{aInfoId}")
     public AttendanceInfoResponse getAFullInfo (@NotNull @PathVariable("aInfoId") Integer aInfoId) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         AttendanceInfoResponse response = aInfoService.findAFullInfo(userId, aInfoId);
         return response;
     }
@@ -40,14 +37,14 @@ public class AttendanceInfoController {
     @PatchMapping("/{aInfoId}")
     public AttendanceInfoResponse editAInfo (@NotNull @PathVariable("aInfoId") Integer aInfoId,
                                              @Valid @RequestBody EditAttendanceInfoByAdminRequest updateData) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         AttendanceInfoResponse response = aInfoService.modifyAInfo(userId, aInfoId, updateData);
         return response;
     }
 
     @PatchMapping
     public SuccessResponse editAInfoMulti(@Valid @RequestBody EditAttendanceInfoMultiRequest request) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         SuccessResponse response = aInfoService.modifyAInfoMulti(userId, request);
         return response;
     }
@@ -68,7 +65,7 @@ public class AttendanceInfoController {
 
     @PatchMapping("/calculate-status")
     public SuccessResponse updateLeavingTime(@Valid @RequestBody CalculateAttendanceInfoStatusRequest request) {
-        Integer userId = adminTmpId;
+        Integer userId = AuthController.userId;
         SuccessResponse response = aInfoService.calculateAInfoStatus(request);
         return response;
 

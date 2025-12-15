@@ -66,6 +66,23 @@
             AND ROLE = 'member'
     </select>
 
+    <select id="selectUserByLoginIdAndLoginPwd" resultType="User">
+        SELECT
+        ID,
+        LOGIN_ID,
+        LOGIN_PWD,
+        NAME,
+        COMPANY,
+        ROLE,
+        START_DAY,
+        END_DAY
+        FROM
+        USERS
+        WHERE
+            LOGIN_ID = #{loginId}
+            AND LOGIN_PWD = #{loginPwd}
+    </select>
+
     <update id="updateUser" parameterType="User">
         UPDATE USERS
         SET
