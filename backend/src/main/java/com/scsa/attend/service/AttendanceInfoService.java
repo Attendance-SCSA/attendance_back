@@ -42,11 +42,11 @@ public class AttendanceInfoService {
 
     @Transactional(readOnly = true)
     public List<AttendanceInfoResponse> findAInfosByCondition(Integer userId, SearchAttendanceInfoRequest request) {
-        Integer memId = request.getMemId();
-        if (memId == null) {
+        List<Integer> memIdList = request.getMemIdList();
+        if (memIdList == null || memIdList.size() != 1) {
             userService.requireAdmin(userId);
         } else {
-            userService.requireAdminOrSelf(userId, memId);
+            userService.requireAdminOrSelf(userId, memIdList.get(0));
         }
         userService.checkPeriodValidation(request.getStartDate(), request.getEndDate());
         AttendanceInfoSearchCondition condition = request.convertToSearchCondition();
@@ -314,7 +314,7 @@ public class AttendanceInfoService {
 
         // 1. Null 종속성 검증 (arrival이 null이면, leaving도 null이어야 함)
         if (arrival == null && leaving != null) {
-            throw new IllegalArgumentException("도착 시간이 기록되지 않은 상태에서 퇴근 시간만 기록될 수 없습니다.");
+            throw new InvalidInputException("도착 시간이 기록되지 않은 상태에서 퇴근 시간만 기록될 수 없습니다.");
         }
 
         // arrival과 leaving이 모두 null이면, 검증할 필요 없음.
@@ -327,7 +327,7 @@ public class AttendanceInfoService {
         // arrival 시간이 존재할 경우, 날짜가 기준 날짜와 일치하는지 검증
         if (arrival != null) {
             if (!arrival.toLocalDate().isEqual(aDate)) {
-                throw new IllegalArgumentException("도착 시간의 날짜는 출석 기준 날짜(" + aDate + ")와 일치해야 합니다.");
+                throw new InvalidInputException("출근일의 날짜는 출석 기준 날짜(" + aDate + ")와 일치해야 합니다.");
             }
         }
 
@@ -335,7 +335,7 @@ public class AttendanceInfoService {
         if (leaving != null) {
             // leaving 시간이 자정을 넘기는 예외 케이스(익일 퇴근)를 고려해야 할 수 있으나, 여기서는 '같아야 한다'는 요구사항에 충실하게 작성합니다.
             if (!leaving.toLocalDate().isEqual(aDate)) {
-                throw new InvalidInputException("퇴근 시간의 날짜는 출석 기준 날짜(" + aDate + ")와 일치해야 합니다.");
+                throw new InvalidInputException("퇴근일의 날짜는 출석 기준 날짜(" + aDate + ")와 일치해야 합니다.");
             }
         }
 

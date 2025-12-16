@@ -21,11 +21,9 @@ public class AttendanceInfoSearchCondition {
     // DTO와 동일하게 LocalDate를 유지 (검색 종료 날짜)
     private LocalDate endDate;
 
-    private Integer memId;
+    private List<Integer> memIdList;
 
-    // status는 List<String> 그대로 유지
     private List<String> statusList;
-
-    private String isApproved;
-    private String isOfficial;
+    private List<String> isApprovedList;
+    private List<String> isOfficialList;
 }

@@ -17,23 +17,19 @@ import java.util.List;
 @Builder
 public class SearchAttendanceInfoRequest {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate startDate; // 둘 다 null이거나 둘 다 Date여야 함 (로직으로 검증)
+    private LocalDate startDate;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDate endDate; // 둘 다 null이거나 둘 다 Date여야 함 (로직으로 검증)
+    private LocalDate endDate;
 
-    private Integer memId;
+    private List<Integer> memIdList;
 
-    // JSON 배열 ["late/early", "absent"] 매핑을 위한 List<String>
+    // JSON 배열 ["late/early", "absent", null] 등 매핑을 위한 List<String>
     private List<@Pattern(regexp = "^(late/early|absent|normal)$") String> statusList;
 
-    // 요청 예시가 "denied"이므로, Y/N 정규식은 제거하거나 수정해야 함
-    @Pattern(regexp = "^(denied|accepted)$")
-    private String isApproved;
+    private List<@Pattern(regexp = "^(denied|approved)$") String> isApprovedList;
 
-    // Y/N만 허용된다면, 정규식을 유지하거나 해당 도메인 값을 허용하도록 수정
-    @Pattern(regexp = "^[YNyn]$")
-    private String isOfficial;
+    private List<@Pattern(regexp = "^[YNyn]$") String> isOfficialList;
 
     public AttendanceInfoSearchCondition convertToSearchCondition() {
 
@@ -48,10 +44,10 @@ public class SearchAttendanceInfoRequest {
             condition.setEndDate(null);
         }
 
-        condition.setMemId(memId);
+        condition.setMemIdList(memIdList);
         condition.setStatusList(statusList);
-        condition.setIsApproved(isApproved);
-        condition.setIsOfficial(isOfficial);
+        condition.setIsApprovedList(isApprovedList);
+        condition.setIsOfficialList(isOfficialList);
 
         return condition;
     }

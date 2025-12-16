@@ -83,23 +83,70 @@
                 AND AI.A_DATE <![CDATA[ < ]]> #{endDate}
             </if>
 
-            <if test="memId != null">
-                AND AI.MEM_ID = #{memId}
-            </if>
-
-            <if test="statusList != null and statusList.size > 0">
-                AND AI.STATUS IN
-                <foreach collection="statusList" item="status" open="(" separator="," close=")">
-                    #{status}
+            <if test="memIdList != null and memIdList.size > 0">
+                AND AI.MEM_ID IN
+                <foreach collection="memIdList" item="memId" open="(" separator="," close=")">
+                    #{memId}
                 </foreach>
             </if>
 
-            <if test="isApproved != null and isApproved != ''">
-                AND AI.IS_APPROVED = #{isApproved}
+            <if test="statusList != null and statusList.size > 0">
+                AND (
+                <if test="statusList.contains(null)">
+                    AI.STATUS IS NULL
+                </if>
+
+                <if test="statusList.size > (statusList.contains(null) ? 1 : 0)">
+
+                    <if test="statusList.contains(null)">
+                        OR
+                    </if>
+
+                    AI.STATUS IN
+                    <foreach collection="statusList" item="status" open="(" separator="," close=")">
+                        <if test="status != null">
+                            #{status}
+                        </if>
+                    </foreach>
+                </if>
+                )
             </if>
 
-            <if test="isOfficial != null and isOfficial != ''">
-                AND AI.IS_OFFICIAL = #{isOfficial}
+            <if test="isApprovedList != null and isApprovedList.size > 0">
+                AND (
+                <if test="isApprovedList.contains(null)">
+                    AI.IS_APPROVED IS NULL
+                </if>
+                <if test="isApprovedList.size > (isApprovedList.contains(null) ? 1 : 0)">
+                    <if test="isApprovedList.contains(null)">
+                        OR
+                    </if>
+                    AI.IS_APPROVED IN
+                    <foreach collection="isApprovedList" item="isApproved" open="(" separator="," close=")">
+                        <if test="isApproved != null and isApproved != ''">
+                            #{isApproved}
+                        </if>
+                    </foreach>
+                </if>
+                )
+            </if>
+            <if test="isOfficialList != null and isOfficialList.size > 0">
+                AND (
+                <if test="isOfficialList.contains(null)">
+                    AI.IS_OFFICIAL IS NULL
+                </if>
+                <if test="isOfficialList.size > (isOfficialList.contains(null) ? 1 : 0)">
+                    <if test="isOfficialList.contains(null)">
+                        OR
+                    </if>
+                    AI.IS_OFFICIAL IN
+                    <foreach collection="isOfficialList" item="isOfficial" open="(" separator="," close=")">
+                        <if test="isOfficial != null and isOfficial != ''">
+                            #{isOfficial}
+                        </if>
+                    </foreach>
+                </if>
+                )
             </if>
         </where>
         ORDER BY AI.A_DATE DESC
