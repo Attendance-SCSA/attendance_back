@@ -97,8 +97,10 @@ public class AttendanceInfoService {
     public SuccessResponse modifyAInfoMulti(Integer userId, EditAttendanceInfoMultiRequest request) {
         userService.requireAdmin(userId);
         Integer aTypeId = request.getUpdateData().getATypeId();
-        AttendanceType aType = aTypeMapper.selectAType(aTypeId);
-        aTypeService.checkExistingAType(aType);
+        if (aTypeId != null) {
+            AttendanceType aType = aTypeMapper.selectAType(aTypeId);
+            aTypeService.checkExistingAType(aType);
+        }
 
         int updatedCount = 0;
 
