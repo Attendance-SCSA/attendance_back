@@ -29,7 +29,7 @@ public class AuthService {
         User loginUser = userMapper.selectUserByLoginIdAndLoginPwd(user);
 
         if (loginUser == null) {
-            throw new NotFoundException("로그인이 실패했습니다. 아이디 혹은 비밀번호를 다시 확인하세요.");
+                throw new NotFoundException("로그인에 실패했습니다. 아이디 혹은 비밀번호를 다시 확인하세요.");
         }
 
         loginedUserIds.add(loginUser.getId());
