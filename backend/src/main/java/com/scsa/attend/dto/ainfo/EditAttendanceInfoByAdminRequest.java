@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.converter.json.GsonBuilderUtils;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -22,10 +23,10 @@ public class EditAttendanceInfoByAdminRequest {
     private Integer aTypeId;
 
     // NULL 허용 + presence flag
-    private LocalDateTime arrivalTime;
+    private LocalTime arrivalTime;
     private boolean arrivalTimePresent;
 
-    private LocalDateTime leavingTime;
+    private LocalTime leavingTime;
     private boolean leavingTimePresent;
 
     private String status;
@@ -58,16 +59,16 @@ public class EditAttendanceInfoByAdminRequest {
         this.aTypeId = aTypeId;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss")
     @JsonSetter("arrivalTime")
-    public void setArrivalTime(LocalDateTime arrivalTime) {
+    public void setArrivalTime(LocalTime arrivalTime) {
         this.arrivalTime = arrivalTime;
         this.arrivalTimePresent = true;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    @JsonFormat(pattern = "HH:mm:ss")
     @JsonSetter("leavingTime")
-    public void setLeavingTime(LocalDateTime leavingTime) {
+    public void setLeavingTime(LocalTime leavingTime) {
         this.leavingTime = leavingTime;
         this.leavingTimePresent = true;
     }
@@ -110,8 +111,20 @@ public class EditAttendanceInfoByAdminRequest {
 
         if (isOff != null) info.setIsOff(isOff);
         if (aTypeId != null) info.setATypeId(aTypeId);
-        if (arrivalTimePresent) info.setArrivalTime(arrivalTime);
-        if (leavingTimePresent) info.setLeavingTime(leavingTime);
+        if (arrivalTimePresent) {
+            if (arrivalTime == null) {
+                info.setArrivalTime(null);
+            } else {
+                info.setArrivalTime(aFullInfo.getAttendanceInfo().getADate().atTime(arrivalTime));
+            }
+        }
+        if (leavingTimePresent) {
+            if (leavingTime == null) {
+                info.setLeavingTime(null);
+            } else {
+                info.setLeavingTime(aFullInfo.getAttendanceInfo().getADate().atTime(leavingTime));
+            }
+        }
         if (statusPresent) info.setStatus(status);
         if (isApprovedPresent) info.setIsApproved(isApproved);
         if (isOfficialPresent) info.setIsOfficial(isOfficial);
