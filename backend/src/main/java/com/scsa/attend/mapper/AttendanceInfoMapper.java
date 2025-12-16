@@ -30,6 +30,5 @@ public interface AttendanceInfoMapper {
     void insertAInfoBatch(AttendanceInfoBatch batchParams);
     int updateAInfoATypeToDefault(@Param("oldTypeId") Integer oldTypeId, @Param("defaultTypeId") Integer defaultTypeId);
     List<AttendanceFullInfo> selectAFullInfosByDate(@Param("targetDate") LocalDate targetDate);
-
-
+    List<AttendanceFullInfo> selectAFullInfoList(List<Integer> aInfoIdList);
 }

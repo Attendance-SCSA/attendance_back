@@ -244,7 +244,7 @@
         AND AI.MEM_ID = #{memId}
     </select>
 
-    <select id="selectFullInfosByDate"
+    <select id="selectAFullInfoList"
             resultMap="AttendanceFullInfoResultMap">
 
         SELECT
@@ -271,7 +271,14 @@
         JOIN USERS U ON AI.MEM_ID = U.ID
         JOIN ATTENDANCE_TYPE AT ON AI.A_TYPE_ID = AT.ID
 
-        WHERE AI.A_DATE = #{targetDate}
+        <where>
+            <if test="list != null and list.size > 0">
+                AI.ID IN
+                <foreach collection="list" item="id" open="(" separator="," close=")">
+                    #{id}
+                </foreach>
+            </if>
+        </where>
         ORDER BY AI.MEM_ID ASC
     </select>
 

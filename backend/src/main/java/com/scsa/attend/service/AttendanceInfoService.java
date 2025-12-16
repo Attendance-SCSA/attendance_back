@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -238,12 +239,13 @@ public class AttendanceInfoService {
 
     public SuccessResponse calculateAInfoStatus(CalculateAttendanceInfoStatusRequest request) {
 
-        LocalDate targetDate = request.getTargetDate();
-        List<AttendanceFullInfo> records = aInfoMapper.selectAFullInfosByDate(targetDate);
-        if (records.isEmpty()) {
-            return new SuccessResponse(targetDate + "에 해당하는 출석 기록이 없습니다. 처리 건수: 0");
-        }
+        List<Integer> aInfoIdList = request.getAInfoIdList();
 
+        List<AttendanceFullInfo> records = aInfoMapper.selectAFullInfoList(aInfoIdList);
+
+        if (records.isEmpty()) {
+            return new SuccessResponse("해당하는 출석 기록이 없습니다. 업데이트 건수: 0");
+        }
 
         // 3. 상태 계산 로직 실행
         for (AttendanceFullInfo fullInfo : records) {
@@ -254,9 +256,8 @@ public class AttendanceInfoService {
             aInfoMapper.updateStatus(info);
         }
 
-
         // 5. 결과 반환
-        return new SuccessResponse(targetDate + "의 출석 상태 계산 완료. 업데이트 건수: " + records.size());
+        return new SuccessResponse("출석 상태 계산 완료. 업데이트 건수: " + records.size());
 
     }
 
