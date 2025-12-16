@@ -1,10 +1,10 @@
 package com.scsa.attend.mapper;
 
+import com.scsa.attend.dto.ainfo.EditAttendanceInfoMultiRequest;
 import com.scsa.attend.vo.AttendanceFullInfo;
 import com.scsa.attend.vo.AttendanceInfo;
 import com.scsa.attend.vo.AttendanceInfoBatch;
 import com.scsa.attend.vo.AttendanceInfoSearchCondition;
-import jakarta.validation.constraints.NotNull;
 import org.apache.ibatis.annotations.Param;
 
 import java.time.LocalDate;
@@ -15,7 +15,8 @@ public interface AttendanceInfoMapper {
 
     List<AttendanceFullInfo> selectAFullInfosByCondition(AttendanceInfoSearchCondition condition);
     AttendanceFullInfo selectAFullInfo(@Param("aInfoId") Integer aInfoId);
-    int updateAttendanceInfo(AttendanceInfo attendanceInfo);
+    int updateAInfo(AttendanceInfo attendanceInfo);
+
     AttendanceFullInfo selectAFullInfoByDateAndMemId(@Param("aDate") LocalDate aDate, @Param("memId") Integer memId);
     void updateArrivalTime(@Param("aInfoId") Integer aInfoId, @Param("recordTime") LocalDateTime recordTime);
     void updateLeavingTime(@Param("aInfoId") Integer aInfoId, @Param("recordTime") LocalDateTime recordTime);
@@ -28,8 +29,7 @@ public interface AttendanceInfoMapper {
      */
     void insertAInfoBatch(AttendanceInfoBatch batchParams);
     int updateAInfoATypeToDefault(@Param("oldTypeId") Integer oldTypeId, @Param("defaultTypeId") Integer defaultTypeId);
-    List<AttendanceFullInfo> selectFullInfosByDate(@Param("targetDate") LocalDate targetDate);
-
+    List<AttendanceFullInfo> selectAFullInfosByDate(@Param("targetDate") LocalDate targetDate);
 
 
 }

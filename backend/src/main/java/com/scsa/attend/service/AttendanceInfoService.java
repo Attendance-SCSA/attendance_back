@@ -21,7 +21,6 @@ import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,11 +80,9 @@ public class AttendanceInfoService {
         AttendanceType aType = aTypeMapper.selectAType(aTypeId);
         if (aType != null) { // 출석 유형이 실제로 있는 경우만 변경 가능
             aTypeService.checkExistingAType(aType);
-
         }
-
-        // DB 반영 (AttendanceInfoMapper는 AttendanceInfo 객체를 받아서 업데이트한다고 가정)
-        aInfoMapper.updateAttendanceInfo(aFullInfo.getAttendanceInfo());
+        // DB 반영
+        aInfoMapper.updateAInfo(aFullInfo.getAttendanceInfo());
 
         // 수정 된 것 다시 불러오기
         aFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
@@ -95,12 +92,6 @@ public class AttendanceInfoService {
 
     }
 
-//    @Transactional
-//    public AttendanceInfoResponse modifyAInfoMulti(Integer userId, @Valid EditAttendanceInfoMultiRequest request) {
-//        userService.requireAdmin(userId);
-//
-//    }
-//
     @Transactional
     public SuccessResponse modifyAInfoMulti(Integer userId, EditAttendanceInfoMultiRequest request) {
         userService.requireAdmin(userId);
@@ -110,37 +101,18 @@ public class AttendanceInfoService {
 
         int updatedCount = 0;
 
-        // 1. 기본 유효성 검증 (DTO 검증 외 추가 검증)
-        if (request.getStartDate().isAfter(request.getEndDate())) {
-            throw new InvalidInputException("시작일은 종료일보다 늦을 수 없습니다.");
-        }
+        for (Integer aInfoId : request.getAInfoIdList()) {
+            AttendanceFullInfo aFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
 
-        LocalDate currentDate = request.getStartDate();
-
-        // 2. 날짜 순회 루프
-        while (!currentDate.isAfter(request.getEndDate())) {
-
-            // 3. 사용자 ID 순회 루프
-            for (Integer memId : request.getMemIdList()) {
-
-                // 4. 출결 정보 조회
-                // 'aDate'와 'memId'로 기존 AttendanceFullInfo를 DB에서 조회합니다.
-                AttendanceFullInfo aFullInfo = aInfoMapper.selectAFullInfoByDateAndMemId(currentDate, memId);
-
-                if (aFullInfo != null) {
-                    EditAttendanceInfoByAdminRequest updateData = request.getUpdateData();
-                    updateData.updateAFullInfo(aFullInfo);
-//                    checkArrivalLeavingTime(aFullInfo); // 출퇴근 시간 정합성 검증 불필요 (ArrivalLeavingTime은 사용하지 않으므로..)
-                    updatedCount += aInfoMapper.updateAttendanceInfo(aFullInfo.getAttendanceInfo());
-                }
+            if (aFullInfo != null) {
+                EditAttendanceInfoByAdminRequest updateData = request.getUpdateData();
+                updateData.updateAFullInfo(aFullInfo);
+                updatedCount += aInfoMapper.updateAInfo(aFullInfo.getAttendanceInfo());
 
             }
-
-            // 다음 날짜로 이동
-            currentDate = currentDate.plusDays(1);
         }
 
-        return new SuccessResponse("출석 정보가 성공적으로 변경되었습니다. (" + updatedCount + "건)");
+        return new SuccessResponse("출석 정보가 성공적으로 변경되었습니다. (요청 건수 : " + request.getAInfoIdList().size() + ", 성공 건수 : " + updatedCount + "건)");
     }
 
     public SuccessResponse modifyArrivalTime(Integer userId, Integer aInfoId) {
@@ -266,7 +238,7 @@ public class AttendanceInfoService {
     public SuccessResponse calculateAInfoStatus(CalculateAttendanceInfoStatusRequest request) {
 
         LocalDate targetDate = request.getTargetDate();
-        List<AttendanceFullInfo> records = aInfoMapper.selectFullInfosByDate(targetDate);
+        List<AttendanceFullInfo> records = aInfoMapper.selectAFullInfosByDate(targetDate);
         if (records.isEmpty()) {
             return new SuccessResponse(targetDate + "에 해당하는 출석 기록이 없습니다. 처리 건수: 0");
         }

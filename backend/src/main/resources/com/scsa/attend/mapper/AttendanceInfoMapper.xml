@@ -182,7 +182,7 @@
         WHERE AI.ID = #{aInfoId}
     </select>
 
-    <update id="updateAttendanceInfo" parameterType="AttendanceInfo">
+    <update id="updateAInfo" parameterType="AttendanceInfo">
         UPDATE attendance_info
         <set>
             <if test="isOff != null">

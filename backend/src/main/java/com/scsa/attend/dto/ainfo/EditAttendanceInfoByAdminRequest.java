@@ -1,6 +1,7 @@
 package com.scsa.attend.dto.ainfo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.scsa.attend.exception.InvalidInputException;
 import com.scsa.attend.vo.AttendanceFullInfo;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 public class EditAttendanceInfoByAdminRequest {
 
     private String isOff;
+    @JsonProperty("aTypeId")
     private Integer aTypeId;
 
     // NULL 허용 + presence flag
