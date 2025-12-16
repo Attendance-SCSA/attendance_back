@@ -3,6 +3,7 @@ package com.scsa.attend.controller;
 import com.scsa.attend.dto.SuccessResponse;
 import com.scsa.attend.dto.ainfo.*;
 import com.scsa.attend.service.AttendanceInfoService;
+import com.scsa.attend.vo.AttendanceFullInfo;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -54,18 +55,18 @@ public class AttendanceInfoController {
     }
 
     @PatchMapping("/{aInfoId}/arrival")
-    public SuccessResponse updateArrivalTime(@RequestHeader(value = "userId", required = false) Integer userId,
+    public AttendanceFullInfo updateArrivalTime(@RequestHeader(value = "userId", required = false) Integer userId,
                                              @NotNull @PathVariable("aInfoId") Integer aInfoId) {
 //        Integer userId = 3;
-        SuccessResponse response = aInfoService.modifyArrivalTime(userId, aInfoId);
+        AttendanceFullInfo response = aInfoService.modifyArrivalTime(userId, aInfoId);
         return response;
     }
 
     @PatchMapping("/{aInfoId}/leaving")
-    public SuccessResponse updateLeavingTime(@RequestHeader(value = "userId", required = false) Integer userId,
-                                             @NotNull @PathVariable("aInfoId") Integer aInfoId) {
+    public AttendanceFullInfo updateLeavingTime(@RequestHeader(value = "userId", required = false) Integer userId,
+                                                @NotNull @PathVariable("aInfoId") Integer aInfoId) {
 //        Integer userId = 3;
-        SuccessResponse response = aInfoService.modifyLeavingTime(userId, aInfoId);
+        AttendanceFullInfo response = aInfoService.modifyLeavingTime(userId, aInfoId);
         return response;
     }
 

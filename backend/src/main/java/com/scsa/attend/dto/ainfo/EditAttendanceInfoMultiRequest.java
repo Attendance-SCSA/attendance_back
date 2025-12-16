@@ -22,7 +22,8 @@ public class EditAttendanceInfoMultiRequest {
     private List<Integer> aInfoIdList;
 
     // 이 요청의 updateData를 파싱할 때, arrivalTime과 leavingTime 필드는 무시하도록 강제
-    @JsonIgnoreProperties({"arrivalTime", "leavingTime"}) // "arrivalTime", "leavingTime"은 다건 변경 요청으로는 변경 불가
+    // @JsonIgnoreProperties({"arrivalTime", "leavingTime"}) // "arrivalTime", "leavingTime"은 다건 변경 요청으로는 변경 불가
+    // 출퇴근 기록 시간도 변경 가능 필요
     @NotNull
     private EditAttendanceInfoByAdminRequest updateData;
 }

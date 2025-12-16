@@ -115,11 +115,11 @@ public class AttendanceInfoService {
         return new SuccessResponse("출석 정보가 성공적으로 변경되었습니다. (요청 건수 : " + request.getAInfoIdList().size() + ", 성공 건수 : " + updatedCount + "건)");
     }
 
-    public SuccessResponse modifyArrivalTime(Integer userId, Integer aInfoId) {
+    public AttendanceFullInfo modifyArrivalTime(Integer userId, Integer aInfoId) {
         AttendanceFullInfo aFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
         checkExistingAFullInfo(aFullInfo);
 
-        requireSelf(userId, aFullInfo.getUser().getId());
+        userService.requireAdminOrSelf(userId, aFullInfo.getUser().getId());
         LocalDateTime currentDateTime = LocalDateTime.now(KST_ZONE);
 
         LocalDate aDate = aFullInfo.getAttendanceInfo().getADate();
@@ -159,23 +159,25 @@ public class AttendanceInfoService {
 
         // 기존 출근 시간이 없거나, 현재 기록 시간이 기존 시간보다 빠른 경우에만 업데이트를 진행
         if (existingArrival != null && !recordTime.isBefore(existingArrival)) {
-            return new SuccessResponse("출근 시간이 이미 기록되어 있습니다. 기록 시간 : " + existingArrival);
+            throw new InvalidInputException("출근 시간이 이미 기록되어 있습니다. 기록 시간 : " + existingArrival);
         }
 
         aInfoMapper.updateArrivalTime(aInfoId, recordTime);
 
-        return new SuccessResponse("출근 시간이 성공적으로 기록되었습니다. 기록 시간 : " + recordTime);
+        AttendanceFullInfo updatedFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
+
+        return updatedFullInfo;
 
     }
 
-    public SuccessResponse modifyLeavingTime(Integer userId, @NotNull Integer aInfoId) {
+    public AttendanceFullInfo modifyLeavingTime(Integer userId, @NotNull Integer aInfoId) {
 
         // 1. 기본 정보 조회 및 검증
         AttendanceFullInfo aFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
         checkExistingAFullInfo(aFullInfo);
 
         // 2. 권한 검증 및 데이터 준비
-        requireSelf(userId, aFullInfo.getUser().getId());
+        userService.requireAdminOrSelf(userId, aFullInfo.getUser().getId());
 
         // 3. 서버 시간 및 날짜 검증
         LocalDateTime currentDateTime = LocalDateTime.now(KST_ZONE);
@@ -207,7 +209,7 @@ public class AttendanceInfoService {
         // 최종 기록 시간 (서버 시간 사용)
         LocalDateTime recordTime = currentDateTime;
 
-        //  핵심: 퇴근 시간대 유효성 검증 (arrival < leaving < latest) 🚨
+        //  핵심: 퇴근 시간대 유효성 검증 (arrival < leaving < latest)
         if (recordTime.isBefore(existingArrival) || !recordTime.isBefore(latestTime)) {
             throw new InvalidInputException(
                     String.format("현재 시각(%s)은 퇴근 인정 시간대 (~ %s)가 아닙니다. 퇴근 시간은 출근 시간 이후이고, 마감 시간(%s) 이전이어야 합니다.",
@@ -215,14 +217,14 @@ public class AttendanceInfoService {
             );
         }
 
-        // 핵심: 최대값 갱신 로직 (DB에서 검증 안 하므로 Service에서 처리) 🚨
+        // 핵심: 최대값 갱신 로직 (DB에서 검증 안 하므로 Service에서 처리)
         LocalDateTime existingLeaving = aFullInfo.getAttendanceInfo().getLeavingTime();
 
         // 기존 퇴근 시간이 존재하고, 현재 기록 시간(recordTime)이 기존 시간보다 늦지 않은 경우
         if (existingLeaving != null && !recordTime.isAfter(existingLeaving)) {
             // 현재 recordTime이 기존 기록보다 빠르거나 같으므로, 업데이트할 필요가 없습니다.
             // 가장 늦은 시간으로 기록해야 하는 요구사항을 충족하지 못합니다.
-            return new SuccessResponse("퇴근 시간이 이미 더 늦은 시간으로 기록되어 갱신하지 않았습니다. 기록 시간 : " + existingLeaving);
+            throw new InvalidInputException("퇴근 시간이 이미 더 늦은 시간으로 기록되어 갱신하지 않았습니다. 기록 시간 : " + existingLeaving);
         }
 
         // 10. DB 업데이트 실행 (가장 늦은 시간으로 갱신)
@@ -230,9 +232,8 @@ public class AttendanceInfoService {
 
         // 11. 업데이트된 정보 재조회 및 응답 생성
         AttendanceFullInfo updatedFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
-        AttendanceInfoResponse response = AttendanceInfoResponse.fromFullInfo(updatedFullInfo);
 
-        return new SuccessResponse("퇴근 시간이 성공적으로 기록/갱신되었습니다. 기록 시간 : " + recordTime);
+        return updatedFullInfo;
     }
 
     public SuccessResponse calculateAInfoStatus(CalculateAttendanceInfoStatusRequest request) {
@@ -286,7 +287,7 @@ public class AttendanceInfoService {
 
         // 1. Null 종속성 검증 (arrival이 null이면, leaving도 null이어야 함)
         if (arrival == null && leaving != null) {
-            throw new InvalidInputException("도착 시간이 기록되지 않은 상태에서 퇴근 시간만 기록될 수 없습니다.");
+            throw new InvalidInputException("출근 시간이 기록되지 않은 상태에서 퇴근 시간만 기록될 수 없습니다.");
         }
 
         // arrival과 leaving이 모두 null이면, 검증할 필요 없음.
@@ -320,12 +321,6 @@ public class AttendanceInfoService {
             if (arrival.isAfter(leaving) || arrival.isEqual(leaving)) {
                 throw new InvalidInputException("출근 시간은 퇴근 시간보다 같거나 늦을 수 없습니다.");
             }
-        }
-    }
-
-    private void requireSelf(Integer userId, Integer aInfoMemId) {
-        if (!Objects.equals(userId, aInfoMemId)) {
-            throw new PermissionDeniedException("본인의 출결 기록이 아닙니다.");
         }
     }
 
