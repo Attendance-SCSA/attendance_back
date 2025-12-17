@@ -88,7 +88,7 @@ public class AttendanceTypeService {
         // 삭제
         aTypeMapper.deleteAType(aTypeId);
 
-        return new SuccessResponse("출석 유형이 성공적으로 삭제되었습니다. (" + updatedCount + "건의 종속 데이터가 기본 유형으로 변경됨)");
+        return new SuccessResponse("출결 유형이 성공적으로 삭제되었습니다. (" + updatedCount + "건의 출결 정보가 기본 유형으로 변경됨)");
 
     }
 

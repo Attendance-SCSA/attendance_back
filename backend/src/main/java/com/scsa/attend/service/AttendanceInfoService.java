@@ -259,7 +259,7 @@ public class AttendanceInfoService {
         }
 
         // 5. 결과 반환
-        return new SuccessResponse("출석 상태 계산 완료. 업데이트 건수: " + records.size());
+        return new SuccessResponse("출석 상태 자동 결정 완료. 업데이트 건수: " + records.size());
 
     }
 
