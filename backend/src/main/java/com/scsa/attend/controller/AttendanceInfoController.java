@@ -1,6 +1,7 @@
 package com.scsa.attend.controller;
 
 import com.scsa.attend.dto.SuccessResponse;
+import com.scsa.attend.dto.ainfo.UpdateMemNoteRequest;
 import com.scsa.attend.dto.ainfo.*;
 import com.scsa.attend.service.AttendanceInfoService;
 import com.scsa.attend.vo.AttendanceFullInfo;
@@ -77,6 +78,14 @@ public class AttendanceInfoController {
         SuccessResponse response = aInfoService.calculateAInfoStatus(request);
         return response;
 
+    }
+
+    @PatchMapping("/{aInfoId}/mem_note")
+    public AttendanceFullInfo updateMemNote(@RequestHeader(value = "userId", required = false) Integer userId,
+                                            @NotNull @PathVariable("aInfoId") Integer aInfoId,
+                                            @Valid @RequestBody UpdateMemNoteRequest request) {
+        AttendanceFullInfo response = aInfoService.modifyUpdateMemNote(userId, aInfoId, request);
+        return response;
     }
 
 }

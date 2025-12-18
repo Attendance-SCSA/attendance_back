@@ -21,6 +21,7 @@ public interface AttendanceInfoMapper {
     void updateArrivalTime(@Param("aInfoId") Integer aInfoId, @Param("recordTime") LocalDateTime recordTime);
     void updateLeavingTime(@Param("aInfoId") Integer aInfoId, @Param("recordTime") LocalDateTime recordTime);
     void updateStatus(AttendanceInfo aInfo);
+    void updateMemNote(@Param("aInfoId") Integer aInfoId, @Param("memNote") String memNote);
 
     /**
      * 지정된 기간 내의 평일 날짜에 대해 ATTENDANCE_INFO 테이블에
@@ -31,4 +32,5 @@ public interface AttendanceInfoMapper {
     int updateAInfoATypeToDefault(@Param("oldTypeId") Integer oldTypeId, @Param("defaultTypeId") Integer defaultTypeId);
     List<AttendanceFullInfo> selectAFullInfosByDate(@Param("targetDate") LocalDate targetDate);
     List<AttendanceFullInfo> selectAFullInfoList(List<Integer> aInfoIdList);
+
 }

@@ -263,6 +263,20 @@ public class AttendanceInfoService {
 
     }
 
+    public AttendanceFullInfo modifyUpdateMemNote(Integer userId, Integer aInfoId, UpdateMemNoteRequest request) {
+        AttendanceFullInfo aFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
+        checkExistingAFullInfo(aFullInfo);
+
+        userService.requireAdminOrSelf(userId, aFullInfo.getUser().getId());
+
+        aInfoMapper.updateMemNote(aInfoId, request.getMemNote());
+
+        AttendanceFullInfo updatedFullInfo = aInfoMapper.selectAFullInfo(aInfoId);
+
+        return updatedFullInfo;
+
+    }
+
 
 
     // --------------- 내부 로직 ---------------
@@ -403,5 +417,6 @@ public class AttendanceInfoService {
         // 4-3. 부분 포함 조건 (그 외 모든 경우: 겹치기는 하지만 완전히 포함하지는 않음)
         return "late/early";
     }
+
 
 }

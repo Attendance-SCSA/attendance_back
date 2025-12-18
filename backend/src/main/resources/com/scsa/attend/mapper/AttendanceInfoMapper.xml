@@ -209,6 +209,13 @@
         WHERE ID = #{id}
     </update>
 
+    <update id="updateMemNote" parameterType="AttendanceInfo">
+        UPDATE ATTENDANCE_INFO
+        SET
+        MEM_NOTE = #{memNote}
+        WHERE ID = #{aInfoId}
+    </update>
+
     <select id="selectAFullInfoByDateAndMemId" resultMap="AttendanceFullInfoResultMap">
         SELECT
         -- A. ATTENDANCE_INFO (AI) 필드

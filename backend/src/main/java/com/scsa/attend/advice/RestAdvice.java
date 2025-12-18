@@ -45,8 +45,10 @@ public class RestAdvice {
         ErrorResponse body = new ErrorResponse(
                 status.value(), // 400
                 "INVALID_INPUT",
-                "누락된 필드가 있거나 입력형태가 적절하지 않습니다."
+                "누락된 필드가 있거나 입력형태가 적절하지 않습니다." + e.getMessage()
         );
+//        System.out.println(e.getMessage());
+
 
         return ResponseEntity.status(status).body(body);
     }
